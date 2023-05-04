@@ -41,7 +41,7 @@ form {
   min-width: 5rem;
 }
 
-label {
+.label {
   text-transform: uppercase;
   color: hsl(0, 1%, 44%);
   font-size: 0.7rem;
@@ -65,6 +65,17 @@ input[type="text"]:focus-visible{
 
 input[type="text"]::placeholder{
   color:hsl(0, 1%, 44%)
+}
+
+.error{
+  color: var(--red);
+}
+
+.info-message{
+  font-family: sans-serif;
+  font-style: italic;
+  font-size: 13px;
+  font-weight: normal;
 }
 
 button {

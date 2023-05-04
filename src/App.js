@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./style.css";
+import Input from "./Input";
 
 const getDaysInMonth = (year, month) => {
   console.log(new Date(year, month, 0).getDate());
@@ -40,25 +41,85 @@ const App = () => {
   const [months, setMonths] = useState("--");
   const [days, setDays] = useState("--");
 
-  const [birthDay, setBirthDay] = useState();
-  const [birthMonth, setBirthMonth] = useState();
-  const [birthYear, setBirthYear] = useState();
+  const [birthDay, setBirthDay] = useState({
+    text: "",
+    valid: true,
+    errorMessage: "",
+  });
+  const [birthMonth, setBirthMonth] = useState({
+    text: "",
+    valid: true,
+    errorMessage: "",
+  });
+  const [birthYear, setBirthYear] = useState({
+    text: "",
+    valid: true,
+    errorMessage: "",
+  });
+
+  const isEmpty = (input) => (input === "" || input === null ? true : false);
+  const checkDay = (day) => (day >= 1 && day <= 31 ? true : false);
+  const checkMonth = (month) => (month >= 1 && month <= 12 ? true : false);
+  const checkYear = (year) => (year <= new Date().getFullYear() ? true : false);
+  const checkFutureDate = (day, month, year) => {
+    const inputDate = new Date(year, month, day);
+    return inputDate < new Date() ? true : false;
+  };
+
+  const validate = () => {
+    let valid = true;
+    if (isEmpty(birthDay.text)) {
+      setBirthDay({
+        ...birthDay,
+        valid: false,
+        errorMessage: "This field is required",
+      });
+      valid = false;
+    }
+    if (isEmpty(birthMonth.text)) {
+      console.log("month valid", birthMonth);
+      setBirthMonth({
+        ...birthMonth,
+        valid: false,
+        errorMessage: "This field is required",
+      });
+      console.log("month valid", birthMonth);
+      valid = false;
+    }
+    if (isEmpty(birthMonth.text)) {
+      setBirthYear({
+        ...birthYear,
+        valid: false,
+        errorMessage: "This field is required",
+      });
+      valid = false;
+    }
+    return valid;
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    if (!validate()) {
+      return;
+    }
     const result = calculateAgeTillToday(birthDay, birthMonth, birthYear);
     console.log(result);
-    const { days, months, years } = result;
-    setDays(days);
-    setMonths(months);
-    setYears(years);
+
+      const { days, months, years } = result;
+      // if(days === NaN || months === NaN || years === NaN){
+      //   alert("There's a problem in program, results are NaN")
+      //   return;
+      // }
+      setDays(days);
+      setMonths(months);
+      setYears(years);
+  
   };
 
   return (
     <section className="card">
       <form name="age_calculator" onSubmit={handleSubmit}>
-        <div className="form-group">
+        {/* <div className="form-group">
           <label>Day</label>
           <input
             type="text"
@@ -94,7 +155,51 @@ const App = () => {
             value={birthYear}
             onChange={(e) => setBirthYear(e.target.value)}
           />
-        </div>
+        </div> */}
+        <Input
+          label="Day"
+          id="day"
+          name="day"
+          placeholder="DD"
+          value={birthDay.text}
+          onChange={(e) =>
+            setBirthDay({ text: e.target.value, valid: true, errorMessage: "" })
+          }
+          valid={birthDay.valid}
+          errorMessage={birthDay.errorMessage}
+        />
+        <Input
+          label="Month"
+          id="month"
+          name="month"
+          placeholder="MM"
+          value={birthMonth.text}
+          onChange={(e) =>
+            setBirthMonth({
+              text: e.target.value,
+              valid: true,
+              errorMessage: "",
+            })
+          }
+          valid={birthMonth.valid}
+          errorMessage={birthMonth.errorMessage}
+        />
+        <Input
+          label="Year"
+          id="year"
+          name="year"
+          placeholder="YYYY"
+          value={birthYear.text}
+          onChange={(e) =>
+            setBirthYear({
+              text: e.target.value,
+              valid: true,
+              errorMessage: "",
+            })
+          }
+          valid={birthYear.valid}
+          errorMessage={birthYear.errorMessage}
+        />
 
         <button name="name" type="submit" value="submit">
           <span className="arrow">
